@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/korvex-motion-logo.png" alt="Korvex Motion" width="600"></p>
+
 # Korvex Motion
 
 Estudio de motion graphics **hecho en código** para reels de Instagram (9:16), ads, launches y explainers. Lo usa Korvex Dev para sus productos y clientes. Es un plugin de Claude Code con un flujo por roles:
@@ -76,3 +78,6 @@ Tus clientes van en carpetas propias (`MI-CLIENTE/`). Si haces un fork público,
 - **Método y textos** (`_studio/metodo/`, `_studio/plantillas/`, `_studio/refs/tendencias.md`, `_studio/refs/investigacion-2026-10.md`): [CC BY 4.0](LICENSE-DOCS.md). Puedes usarlos y adaptarlos, también comercialmente, dando crédito a "Korvex Motion, por Yeyow (Korvex Dev)".
 - **De terceros:** GSAP (no incluido, licencia propia de GSAP), SFX de Kenney (CC0), fuentes OFL, lottie-web y Motion (MIT), referencias de /brag (MIT). Detalle en [THIRD_PARTY.md](THIRD_PARTY.md).
 - Los nombres **Korvex**, **Korvex Motion** y **Korvin** son de Korvex Dev; ninguna de estas licencias da derecho a usarlos.
+
+---
+El logo y el nombre **Korvex** son marca de Korvex Dev: no entran en la licencia MIT ni en la CC BY 4.0. Puedes usar el código y el método; el logo, no.
