@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "korvex",
+  "owner": { "name": "Yeyow (Korvex Dev)" },
+  "metadata": {
+    "description": "Herramientas de Korvex Dev para Claude Code",
+    "version": "1.2.0"
+  },
+  "plugins": [
+    {
+      "name": "korvex-motion",
+      "source": "./plugin",
+      "description": "Estudio de motion graphics en código con flujo spec-driven: intake con preguntas → investigador → productor → guionista → editor + QA + juez, con puertas de aprobación de Yeyow.",
+      "version": "1.2.0",
+      "category": "productivity",
+      "keywords": ["motion", "video", "reels", "gsap", "spec-driven"]
+    }
+  ]
+}

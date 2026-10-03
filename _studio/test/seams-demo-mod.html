@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<title>Prueba de costuras (copia modificada para golden.py)</title>
+<link rel="stylesheet" href="../lib/fonts.css">
+<link rel="stylesheet" href="../lib/kit.css">
+<script src="../lib/gsap.min.js"></script>
+<script src="../lib/CustomEase.min.js"></script>
+<script src="../lib/kit.js"></script>
+<style>
+  #stage{background:radial-gradient(900px 700px at 20% 0%, rgb(43 68 230 / .28), transparent 60%),var(--abyss)}
+  .eye{position:absolute;left:70px;font:600 30px/1 'JetBrains Mono';color:var(--kx-300);letter-spacing:.08em}
+  .big{position:absolute;left:70px;font:900 150px/1 'Inter';color:#fff;letter-spacing:-.02em}
+  .big .l{overflow:hidden;padding-bottom:.08em}
+  .big .l span{display:inline-block;white-space:nowrap}
+  .big .accent{color:var(--ember-500)}
+  .cap{position:absolute;left:70px;font:500 34px/1.3 'Inter';color:var(--t2)}
+  .pill{position:absolute;top:1080px;height:110px;padding:0 44px;border-radius:55px;display:flex;align-items:center;
+    font:700 40px 'Inter';color:#fff;background:#1b2440;border:1.5px solid var(--edge-soft)}
+  .pill.new{background:var(--kx-500)}
+  #stop{position:absolute;left:760px;top:1380px;width:150px;height:150px;border-radius:38px;background:var(--ember-500)}
+  .card{position:absolute;left:70px;width:940px;height:300px;border-radius:44px;background:linear-gradient(180deg,rgb(30 40 70 / .95),rgb(14 20 40 / .95));
+    border:1.5px solid var(--edge-soft);display:flex;align-items:center;padding:0 60px;font:700 52px/1.15 'Inter';color:#fff}
+</style></head>
+<body><div id="stage">
+  <!-- 1 · gancho: fitText + nudge + posterize -->
+  <div id="s1" class="layer">
+    <div class="eye" style="top:300px">K.fitText(#hook, 940)</div>
+    <div id="hook" class="big" style="top:360px"><div class="l"><span>LA COSTURA</span></div><div class="l"><span>BIEN HECHA</span></div><div class="l"><span class="accent">NO SE NOTA.</span></div></div>
+    <div id="fitCap" class="cap" style="top:900px"></div>
+    <div class="eye" style="top:1030px">K.nudgeEase</div>
+    <div id="p0" class="pill new" style="left:70px">nuevo</div>
+    <div id="p1" class="pill" style="left:70px">chats</div>
+    <div id="p2" class="pill" style="left:330px">citas</div>
+    <div class="eye" style="top:1330px">K.posterize(t, 10)</div>
+    <div class="cap" style="top:1400px;width:620px">stop-motion: la pieza salta a 10 cuadros por segundo</div>
+    <div id="stop"></div>
+  </div>
+  <!-- 2 · entra por x (corriente a la izquierda) -->
+  <div id="s2" class="layer">
+    <div class="eye" style="top:420px">COSTURA 1 · EJE X · dir -1</div>
+    <div class="big" style="top:480px">ENTRA<br>POR LA<br>DERECHA</div>
+    <div class="card" style="top:1060px">Sale A a la izquierda,<br>entra B desde la derecha.</div>
+  </div>
+  <!-- 3 · entra por y (arriba = conclusion) -->
+  <div id="s3" class="layer">
+    <div class="eye" style="top:420px">COSTURA 2 · EJE Y · dir -1</div>
+    <div class="big" style="top:480px">SUBE:<br>LA<br>CONCLUSIÓN</div>
+    <div class="card" style="top:1060px">Sale A hacia arriba,<br>entra B desde abajo.</div>
+  </div>
+  <!-- 4 · entra por z (A se encoge, B llega grande) -->
+  <div id="s4" class="layer">
+    <div class="eye" style="top:420px">COSTURA 3 · EJE Z · dir -1</div>
+    <div class="big" style="top:480px">LLEGA<br>ALGO MÁS<br>GRANDE</div>
+    <div class="card" style="top:1060px">A se encoge a 0,8;<br>B llega de 1,25 a 1.</div>
+  </div>
+</div>
+<script>
+(async () => {
+  const { $, $$ } = K;
+  window.DURATION = 6.4;
+  window.CUES = [];
+  const T = [1.8, 3.5, 5.0];                              // COPIA MODIFICADA de seams-demo.html: la costura 2 pasa de 3,4 a 3,5 s (prueba de golden.py --compare)
+  await document.fonts.ready;
+
+  // ---- estados del cuadro 0
+  gsap.set('#hook .l span', { yPercent: 140 });
+  gsap.set('#p0', { autoAlpha: 0, scale: 0.92 });
+  gsap.set(['#p1', '#p2'], { x: 0 });
+
+  // ---- K.fitText: con los spans ya escondidos (transform), mide el texto sin transforms
+  const fit = window.FIT = K.fitText('#hook', 940);
+  $('#fitCap').textContent = `→ ${fit.size} px · ancho ${fit.width} px · ${fit.fits ? 'cabe' : 'NO cabe'}`;
+
+  const tl = K.timeline();
+  const F = (el, from, to, t) => tl.fromTo(el, from, { ...to, immediateRender: false }, t);
+
+  // ---- 1 · gancho
+  tl.addLabel('gancho', 0);
+  F('#hook .l span', { yPercent: 140 }, { yPercent: 0, duration: .5, ease: 'expo.out', stagger: .12 }, 0.1);
+  // nudge: lo viejo se reacomoda (3 tramos) y lo nuevo entra en el tramo rapido
+  tl.addLabel('nudge', 0.62);
+  F(['#p1', '#p2'], { x: 0 }, { x: 250, duration: .6, ease: K.nudgeEase }, 0.4);
+  // force3D: false en toda escala: con el translate3d de GSAP el borde del pill variaba 1 nivel entre renders (verify.py)
+  F('#p0', { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: .3, ease: 'power3.out', force3D: false }, 0.4 + 0.6 * 0.2);
+
+  // ---- costuras: la corriente va a la izquierda; arriba = conclusion; Z atras = llega algo mas grande
+  tl.addLabel('corte-x', T[0]);
+  K.cut(tl, '#s1', '#s2', T[0], { axis: 'x', dir: -1 });
+  tl.addLabel('eje-x', 2.6);
+  tl.addLabel('corte-y', T[1]);
+  K.cut(tl, '#s2', '#s3', T[1], { axis: 'y', dir: -1 });
+  tl.addLabel('eje-y', 4.2);
+  tl.addLabel('corte-z', T[2]);
+  K.cut(tl, '#s3', '#s4', T[2], { axis: 'z', dir: -1, blur: 18 });
+  tl.addLabel('eje-z', 5.8);
+  tl.set({}, {}, window.DURATION);
+
+  // ---- por cuadro: stop-motion con K.posterize
+  const stop = $('#stop');
+  K.install(tl, t => {
+    const tp = K.posterize(t, 10);
+    stop.style.transform = `translate(${(Math.sin(tp * 3) * 70).toFixed(1)}px,${(Math.cos(tp * 5) * 30).toFixed(1)}px) rotate(${(tp * 140).toFixed(1)}deg)`;
+  });
+  window.seek(0);
+})();
+</script>
+</body></html>

@@ -1,0 +1,9 @@
+Sound effects by Kenney (https://kenney.nl)
+
+These files are dedicated to the public domain under Creative Commons Zero (CC0 1.0 Universal):
+https://creativecommons.org/publicdomain/zero/1.0/
+
+You may use them in personal and commercial projects. Credit is not required, but "Kenney (kenney.nl)" is appreciated.
+
+Folders: casino/, impact/, interface/, keyboard/, ui/
+sfx-analysis.md / sfx-analysis.json: analysis of these files written for this studio (MIT, like the rest of the code).

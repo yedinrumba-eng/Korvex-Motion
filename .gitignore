@@ -1,0 +1,31 @@
+# GSAP no se versiona: lo baja _studio/setup/get_gsap.py (licencia propia de GSAP)
+_studio/lib/*.min.js
+!_studio/lib/lottie_svg.min.js
+
+# Salidas de render y QA
+*.mp4
+*.wav
+!_studio/sfx/**/*.wav
+*.webm
+qa/
+qa-*/
+_studio/test/*.png
+_studio/test/det/
+_studio/test/regresion/
+frames/
+render.log
+deliver.log
+audio-rms*.js
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Tus clientes: sus carpetas no van en un repo público.
+# Descomenta y cambia por los nombres de tus carpetas:
+# MI-CLIENTE/

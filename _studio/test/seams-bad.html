@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<title>Prueba de costuras mal hechas</title>
+<link rel="stylesheet" href="../lib/fonts.css">
+<link rel="stylesheet" href="../lib/kit.css">
+<script src="../lib/gsap.min.js"></script>
+<script src="../lib/kit.js"></script>
+<style>
+  .eye{position:absolute;left:70px;top:420px;font:600 30px/1 'JetBrains Mono';color:var(--kx-300);letter-spacing:.08em}
+  .big{position:absolute;left:70px;top:480px;font:900 140px/1 'Inter';color:#fff;letter-spacing:-.02em}
+</style></head>
+<body><div id="stage">
+  <div id="b1" class="layer"><div class="eye">ESCENA 1</div><div class="big">UNO</div></div>
+  <div id="b2" class="layer"><div class="eye">1 · K.cut bien hecha (x, -1)</div><div class="big">DOS</div></div>
+  <div id="b3" class="layer"><div class="eye">2 · MAL: entra en dirección opuesta</div><div class="big">TRES</div></div>
+  <div id="b4" class="layer"><div class="eye">3 · MAL: sale encogiendo, entra creciendo</div><div class="big">CUATRO</div></div>
+  <div id="b5" class="layer"><div class="eye">4 · MAL: crossfade, doble exposición</div><div class="big">CINCO</div></div>
+  <div id="b6" class="layer"><div class="eye">5 · MAL: corte seco, nada se mueve</div><div class="big">SEIS</div></div>
+</div>
+<script>
+(async () => {
+  window.DURATION = 6.6;
+  await document.fonts.ready;
+  const tl = K.timeline();
+  const F = (el, from, to, t) => tl.fromTo(el, from, { ...to, immediateRender: false }, t);
+  const seam = (t, out, inn, axis, dir) => (window.SEAMS = window.SEAMS || []).push({ t, out, in: inn, axis, dir });
+  gsap.set(['#b3', '#b4', '#b5', '#b6'], { autoAlpha: 0 });
+
+  // 1 · bien hecha (control): debe dar PASS
+  K.cut(tl, '#b1', '#b2', 1.2, { axis: 'x', dir: -1 });
+
+  // 2 · MAL: A sale a la izquierda, pero B entra desde la izquierda moviendose a la derecha
+  F('#b2', { x: 0, autoAlpha: 1 }, { x: -130, autoAlpha: 0, duration: .28, ease: 'power4.in' }, 2.4 - .28);
+  F('#b3', { x: -130, autoAlpha: .35 }, { x: 0, autoAlpha: 1, duration: .34, ease: 'power4.out' }, 2.4);
+  seam(2.4, '#b2', '#b3', 'x', -1);
+
+  // 3 · MAL (error tipico en Z): A se encoge y B entra creciendo desde chico
+  F('#b3', { scale: 1, autoAlpha: 1 }, { scale: .8, autoAlpha: 0, duration: .28, ease: 'power4.in' }, 3.6 - .28);
+  F('#b4', { scale: .75, autoAlpha: .35 }, { scale: 1, autoAlpha: 1, duration: .34, ease: 'power4.out' }, 3.6);
+  seam(3.6, '#b3', '#b4', 'z', -1);
+
+  // 4 · MAL: los dos se mueven bien (arriba) pero se funden: los dos legibles alrededor del corte
+  F('#b4', { y: 0 }, { y: -230, duration: .3, ease: 'power4.in' }, 4.8 - .3);
+  F('#b4', { autoAlpha: 1 }, { autoAlpha: 0, duration: .3, ease: 'none' }, 4.75);
+  F('#b5', { y: 230 }, { y: 0, duration: .34, ease: 'power4.out' }, 4.8);
+  F('#b5', { autoAlpha: 0 }, { autoAlpha: 1, duration: .3, ease: 'none' }, 4.55);
+  seam(4.8, '#b4', '#b5', 'y', -1);
+
+  // 5 · MAL: corte seco (nada se mueve)
+  tl.set('#b5', { autoAlpha: 0 }, 6.0).set('#b6', { autoAlpha: 1 }, 6.0);
+  seam(6.0, '#b5', '#b6', 'x', -1);
+
+  tl.set({}, {}, window.DURATION);
+  K.install(tl);
+  window.seek(0);
+})();
+</script>
+</body></html>

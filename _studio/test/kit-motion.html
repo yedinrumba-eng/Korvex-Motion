@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<title>Prueba del kit de movimiento v2</title>
+<link rel="stylesheet" href="../lib/fonts.css">
+<link rel="stylesheet" href="../lib/kit.css">
+<script src="../lib/gsap.min.js"></script>
+<script src="../lib/CustomEase.min.js"></script>
+<script src="../lib/Physics2DPlugin.min.js"></script>
+<script src="../lib/lottie_svg.min.js"></script>
+<script src="../lib/kit.js"></script>
+<style>
+  #stage{background:#0d1426}
+  .lbl{position:absolute;left:60px;font:700 30px/1 'Inter';color:#aeb6c7}
+  #tabs{position:absolute;left:60px;top:220px;width:960px;height:110px;border-radius:55px;background:#1b2440}
+  #pill{position:absolute;top:10px;height:90px;border-radius:45px;background:#4f66ff}
+  .tab{position:absolute;top:0;width:320px;height:110px;display:grid;place-items:center;font:700 34px 'Inter';color:#fff}
+  #scr{position:absolute;left:60px;top:440px;font:900 96px/1 'JetBrains Mono';color:#fff;letter-spacing:4px}
+  #box{position:absolute;left:60px;top:640px;width:300px;height:120px;border-radius:24px;background:#ff7a1a}
+  #iris{position:absolute;inset:0;background:#2b44e6;display:grid;place-items:center;font:900 120px 'Inter';color:#fff}
+  #glass{position:absolute;left:600px;top:620px;width:400px;height:300px;border-radius:40px;background:linear-gradient(135deg,#4f66ff,#ff7a1a);filter:url(#k-glass)}
+  #lot{position:absolute;left:60px;top:1000px;width:300px;height:300px}
+  #ball{position:absolute;left:600px;top:1100px;width:60px;height:60px;border-radius:50%;background:#22c55e}
+</style></head>
+<body><div id="stage">
+  <div class="lbl" style="top:170px">K.edges · tabs elásticos</div>
+  <div id="tabs"><div id="pill"></div><div class="tab" style="left:0">Chats</div><div class="tab" style="left:320px">Citas</div><div class="tab" style="left:640px">Leads</div></div>
+  <div class="lbl" style="top:390px">K.scramble</div><div id="scr"></div>
+  <div class="lbl" style="top:590px">K.springs · K.filters (vidrio)</div><div id="box"></div><div id="glass"></div>
+  <div class="lbl" style="top:960px">K.lottie · Physics2D</div><div id="lot"></div><div id="ball"></div>
+  <div id="iris">K.iris</div>
+</div>
+<script>
+(async () => {
+  const stage = K.$('#stage');
+  K.filters();
+  // Lottie minimo (circulo que crece) en linea
+  const LOT = {v:'5.7.4',fr:30,ip:0,op:60,w:300,h:300,layers:[{ddd:0,ind:1,ty:4,nm:'c',sr:1,ip:0,op:60,st:0,bm:0,
+    ks:{o:{a:0,k:100},r:{a:1,k:[{t:0,s:[0],i:{x:[.5],y:[1]},o:{x:[.5],y:[0]}},{t:59,s:[180]}]},p:{a:0,k:[150,150,0]},a:{a:0,k:[0,0,0]},
+        s:{a:1,k:[{t:0,s:[10,10,100],i:{x:[.3,.3,.3],y:[1,1,1]},o:{x:[.7,.7,.7],y:[0,0,0]}},{t:30,s:[100,100,100]}]}},
+    shapes:[{ty:'rc',d:1,p:{a:0,k:[0,0]},s:{a:0,k:[160,160]},r:{a:0,k:30}},{ty:'fl',c:{a:0,k:[0.31,0.4,1,1]},o:{a:0,k:100},r:1}]}]};
+  const lot = K.lottie(K.$('#lot'), LOT);
+  const cur = K.cursor(stage, [{ t: 0, x: 900, y: 1700 }, { t: 0.9, x: 480, y: 275, click: true }, { t: 1.8, x: 800, y: 275, click: true },
+    { t: 2.6, x: 200, y: 690, down: true }, { t: 3.2, x: 330, y: 690, up: true }]);
+  window.CUES = []; window.DURATION = 4.0;
+  const tl = K.timeline();
+  K.iris(tl, '#iris', 3.3, { x: 540, y: 960, dur: 0.6, open: true });
+  tl.set('#iris', { clipPath: 'circle(0px at 540px 960px)' }, 0);
+  tl.fromTo('#ball', { x: 0, y: 0 }, { duration: 1.5, physics2D: { velocity: 900, angle: -70, gravity: 1400 }, ease: 'none', immediateRender: false }, 1.0);
+  tl.set({}, {}, window.DURATION);
+  K.install(tl, t => {
+    const e = K.edges(t, [{ t: 0, l: 10, r: 310 }, { t: 0.95, l: 330, r: 630 }, { t: 1.85, l: 650, r: 950 }]);
+    K.$('#pill').style.left = e.l + 'px'; K.$('#pill').style.width = (e.r - e.l) + 'px';
+    K.$('#scr').textContent = K.scramble(t, 0.3, 1.6, 'KORVEX MOTION', 11);
+    K.$('#box').style.width = K.springs(t, [{ t: 0, v: 300 }, { t: 0.5, v: 460 }, { t: 1.6, v: 220 }]) + 'px';
+    lot.draw(t);
+    cur.update(t);
+  });
+})();
+</script>
+</body></html>

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "korvex-motion",
+  "version": "1.2.0",
+  "description": "Korvex Motion: crea reels, ads, launches y explainers de motion graphics para cualquier cliente con el estudio de este repo. Flujo spec-driven con roles (investigador, productor, guionista, editor, juez) y puertas de aprobación.",
+  "author": {
+    "name": "Yeyow (Korvex Dev)"
+  },
+  "keywords": [
+    "motion",
+    "video",
+    "reels",
+    "gsap",
+    "playwright",
+    "spec-driven"
+  ]
+}
